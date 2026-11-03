@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Disk Scheduling Simulator | FCFS & SSTF</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div class="app-shell">
+    <aside class="sidebar">
+      <div class="brand">
+        <div class="brand-mark">DS</div>
+        <div><strong>DiskLab</strong><span>OS SIMULATOR</span></div>
+      </div>
+      <div class="side-label">WORKSPACE</div>
+      <a class="nav-item active" href="#simulator"><span>▦</span> Simulator</a>
+      <a class="nav-item" href="#comparison"><span>◫</span> Comparison</a>
+      <div class="sidebar-note">
+        <div class="note-icon">i</div>
+        <strong>Learning mode</strong>
+        <p>Explore how FCFS and SSTF service disk requests and affect head movement.</p>
+      </div>
+      <div class="sidebar-footer">OPERATING SYSTEMS<br/>DISK SCHEDULING</div>
+    </aside>
+
+    <main class="main-content" id="simulator">
+      <header class="topbar">
+        <div><div class="eyebrow">OPERATING SYSTEMS / MODULE 4</div><h1>Disk Scheduling Simulator</h1>
+          <p class="subtitle">Visualize disk-head movement and compare scheduling strategies.</p></div>
+        <div class="top-pill"><span class="live-dot"></span> Interactive simulation</div>
+      </header>
+
+      <section class="metrics" aria-label="Summary metrics">
+        <article class="metric-card"><div class="metric-label">ALGORITHMS</div><div class="metric-value">02</div><div class="metric-foot">FCFS + SSTF</div></article>
+        <article class="metric-card"><div class="metric-label">DISK TRACKS</div><div class="metric-value" id="metricTracks">200</div><div class="metric-foot">Track range: 0–199</div></article>
+        <article class="metric-card"><div class="metric-label">REQUESTS</div><div class="metric-value" id="metricRequests">8</div><div class="metric-foot">Pending I/O requests</div></article>
+        <article class="metric-card accent-card"><div class="metric-label">BEST RESULT</div><div class="metric-value" id="metricBest">SSTF</div><div class="metric-foot" id="metricBestFoot">Lower head movement</div></article>
+      </section>
+
+      <section class="panel input-panel">
+        <div class="section-heading"><div><div class="eyebrow">CONFIGURATION</div><h2>Simulation inputs</h2></div><button class="text-button" id="resetBtn" type="button">↺ Reset example</button></div>
+        <div class="input-grid">
+          <label class="field"><span>Disk size (number of tracks)</span><input id="diskSize" type="number" min="2" max="1000000" value="200"/></label>
+          <label class="field"><span>Initial head position</span><input id="headPosition" type="number" min="0" value="53"/></label>
+          <label class="field request-field"><span>Request queue <small>Separate track numbers with commas or spaces</small></span><input id="requests" type="text" value="98, 183, 37, 122, 14, 124, 65, 67"/></label>
+        </div>
+        <div class="input-bottom">
+          <div class="hint"><span>ⓘ</span> Track numbers must be between 0 and disk size − 1.</div>
+          <button class="primary-button" id="runBtn" type="button"><span>▶</span> Run simulation</button>
+        </div>
+        <div class="error-message" id="errorMessage" role="alert"></div>
+      </section>
+
+      <section class="results-section">
+        <div class="section-heading result-heading"><div><div class="eyebrow">RESULTS</div><h2>Algorithm performance</h2></div><div class="legend"><span><i class="legend-dot fcfs-dot"></i> FCFS</span><span><i class="legend-dot sstf-dot"></i> SSTF</span></div></div>
+        <div class="result-grid">
+          <article class="result-card" id="fcfsCard">
+            <div class="result-card-head"><div><span class="algorithm-tag fcfs-tag">ALGORITHM 01</span><h3>FCFS</h3><p>First Come First Serve</p></div><div class="algorithm-icon fcfs-icon">01</div></div>
+            <div class="result-number"><strong id="fcfsTotal">640</strong><span>tracks total movement</span></div>
+            <div class="mini-stats"><div><span>Average / request</span><strong id="fcfsAverage">80.00</strong></div><div><span>Requests served</span><strong id="fcfsCount">8</strong></div></div>
+            <div class="sequence-title">HEAD MOVEMENT SEQUENCE</div><div class="sequence" id="fcfsSequence"></div>
+          </article>
+          <article class="result-card" id="sstfCard">
+            <div class="result-card-head"><div><span class="algorithm-tag sstf-tag">ALGORITHM 02</span><h3>SSTF</h3><p>Shortest Seek Time First</p></div><div class="algorithm-icon sstf-icon">02</div></div>
+            <div class="result-number"><strong id="sstfTotal">236</strong><span>tracks total movement</span></div>
+            <div class="mini-stats"><div><span>Average / request</span><strong id="sstfAverage">29.50</strong></div><div><span>Requests served</span><strong id="sstfCount">8</strong></div></div>
+            <div class="sequence-title">HEAD MOVEMENT SEQUENCE</div><div class="sequence" id="sstfSequence"></div>
+          </article>
+        </div>
+      </section>
+
+      <section class="panel chart-panel" id="comparison">
+        <div class="section-heading"><div><div class="eyebrow">VISUAL ANALYSIS</div><h2>Head movement comparison</h2></div><span class="unit-label">UNIT: TRACKS</span></div>
+        <div class="bar-chart">
+          <div class="bar-row"><div class="bar-label">FCFS</div><div class="bar-track"><div class="bar-fill fcfs-fill" id="fcfsBar" style="width:100%"></div></div><strong id="fcfsBarValue">640</strong></div>
+          <div class="bar-row"><div class="bar-label">SSTF</div><div class="bar-track"><div class="bar-fill sstf-fill" id="sstfBar" style="width:36.875%"></div></div><strong id="sstfBarValue">236</strong></div>
+        </div>
+        <div class="comparison-insight" id="comparisonInsight"><span class="insight-icon">✦</span><div><strong>SSTF reduced head movement by 63.13%</strong><p>For this request sequence, SSTF travels 404 fewer tracks than FCFS.</p></div></div>
+      </section>
+
+      <section class="panel graph-panel">
+        <div class="section-heading"><div><div class="eyebrow">GRAPHICAL ANALYSIS</div><h2>Disk head movement graph</h2><p class="graph-description">Track position visited at each service step. Compare the FCFS and SSTF paths.</p></div><span class="unit-label">Y: TRACK POSITION · X: SERVICE STEP</span></div>
+        <div class="graph-legend"><span><i class="legend-dot fcfs-dot"></i> FCFS</span><span><i class="legend-dot sstf-dot"></i> SSTF</span></div>
+        <div class="line-graph-wrap"><svg id="movementGraph" viewBox="0 0 900 360" role="img" aria-label="Line graph comparing disk head movement for FCFS and SSTF"></svg></div>
+        <p class="graph-note">The first point is the initial head position. Each following point is the next requested track served.</p>
+      </section>
+
+      <section class="panel graph-panel">
+        <div class="section-heading"><div><div class="eyebrow">PERFORMANCE GRAPH</div><h2>Total head movement by algorithm</h2><p class="graph-description">A lower bar means less total disk-head travel for this input.</p></div><span class="unit-label">UNIT: TRACKS</span></div>
+        <div class="performance-graph" id="performanceGraph" aria-label="Bar graph of total head movement">
+          <div class="performance-row"><span>FCFS</span><div class="performance-track"><div id="graphFcfsBar" class="performance-fill fcfs-fill"></div></div><strong id="graphFcfsValue">640</strong></div>
+          <div class="performance-row"><span>SSTF</span><div class="performance-track"><div id="graphSstfBar" class="performance-fill sstf-fill"></div></div><strong id="graphSstfValue">236</strong></div>
+        </div>
+      </section>
+
+      <section class="panel movement-panel">
+        <div class="section-heading"><div><div class="eyebrow">SERVICE ORDER</div><h2>Step-by-step movement</h2></div><div class="tab-switch"><button class="tab active" data-tab="fcfs" type="button">FCFS</button><button class="tab" data-tab="sstf" type="button">SSTF</button></div></div>
+        <div class="movement-table-wrap"><table><thead><tr><th>STEP</th><th>FROM TRACK</th><th>TO TRACK</th><th>DISTANCE</th></tr></thead><tbody id="movementRows"></tbody></table></div>
+      </section>
+      <footer>DiskLab · Educational simulator · FCFS and SSTF scheduling</footer>
+    </main>
+  </div>
+  <script src="script.js"></script>
+</body>
+</html>
